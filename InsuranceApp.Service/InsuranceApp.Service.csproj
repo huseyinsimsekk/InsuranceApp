@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\InsuranceApp.Core\InsuranceApp.Core.csproj" />
+    <ProjectReference Include="..\InsuranceApp.Data\InsuranceApp.Data.csproj" />
+  </ItemGroup>
+
+</Project>

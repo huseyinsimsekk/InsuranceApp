@@ -1,0 +1,20 @@
+﻿@if (ViewData["Message"] is string message)
+{
+    <p>@message</p>
+}
+
+<h1 class="display-4">Zorunlu Trafik Sigortası</h1>
+<div class="row">
+    <div class="col-md-5">
+        <figure class="image-wrap"><img class=" lazyloaded" data-src="//cdnsnet.mncdn.com/ui2019/shared/trafik-sigortasi-bilgi.png" alt="Zorunlu Trafik Sigortası" src="//cdnsnet.mncdn.com/ui2019/shared/trafik-sigortasi-bilgi.png" width="445" height="250"></figure>
+    </div>
+    <div class="col-md-7 px-4">
+        <h3>
+            Trafik Sigortası Sorgulama Nasıl Yapılır?
+        </h3>
+        <p>
+            Trafik sigortası sorgulama internetten yapılabilmektedir. Sigortam.net internet sitesinden trafik sigortası teklifi alarak tek bir ekranda birçok sigorta şirketinin araç sigorta fiyat ve teminatlarını karşılaştırabilirsiniz. Sadece teklif adımlarında sizden istenen bilgileri girmeniz yeterli. 2 dakikada teklifleri görebilir, bütçenize ve ihtiyaçlarınıza en uygun poliçeyi seçerek online ödeme ile hızlıca sigorta güvencenizi başlatabilirsiniz.
+        </p>
+        <a asp-controller="CarInsurance" asp-action="Create" class="btn btn-primary">Teklif Al</a>
+    </div>
+</div>

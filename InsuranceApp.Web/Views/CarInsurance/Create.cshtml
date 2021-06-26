@@ -1,0 +1,69 @@
+﻿@model CarInsuranceModel
+<form asp-controller="CarInsurance" asp-action="Create" method="post" role="form">
+    <div class="form-group">
+        <label asp-for="TCKN">TC Kimlik Numarası</label>
+        <input asp-for="TCKN" type="text" class="form-control col-md-4" placeholder="TCKN Giriniz" onkeypress="return numberOnly(event);">
+        <span asp-validation-for="TCKN" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="LicencePlate">Araç Plakası</label>
+        <input asp-for="LicencePlate" type="text" class="form-control col-md-4" placeholder="34 NET 444">
+        <span asp-validation-for="LicencePlate" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="LicenceCode">Ruhsat Kodu</label>
+        <input asp-for="LicenceCode" type="text" class="form-control col-md-4" placeholder="Ruhsat Kodunu Giriniz">
+        <span asp-validation-for="LicenceCode" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="LicenceSerialNumber">Ruhsat Numarası</label>
+        <input asp-for="LicenceSerialNumber" type="text" class="form-control col-md-4" placeholder="Ruhsat Nuamarasını Giriniz" onkeypress="return numberOnly(event);">
+        <span asp-validation-for="LicenceSerialNumber" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Teklifleri Al</button>
+</form>
+<script type="text/javascript">
+    const numberOnly =  function (evt) {
+        var charCode = (evt.which) ? evt.which : event.keyCode
+        if (charCode > 31 && (charCode < 48 || charCode > 57))
+            return false;
+        return true;
+    }
+
+    $(function () {
+        const licencePlateElement = $('#LicencePlate');
+        const tcknElement = $('#TCKN');
+
+        const renderData = function (element,value) {
+            element.val(value);
+        }
+        const clearData = function (element) {
+            element.val('');
+        }
+
+        const getData = function () {
+             $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetCarInsuranceModel", "CarInsurance")',
+                dataType: "json",
+                data: {
+                    "tckn": tcknElement.val(),
+                    "licencePlate": licencePlateElement.val()
+                },
+                success: function (response) {
+                    if (response) {
+                        renderData($('#LicenceCode'), response.licenceCode);
+                        renderData($('#LicenceSerialNumber'), response.licenceSerialNumber);
+                    }
+                    else {
+                        clearData($('#LicenceCode'));
+                        clearData($('#LicenceSerialNumber'));
+                    }
+                }
+            });
+        }
+
+        tcknElement.on('change', getData);
+        licencePlateElement.on('change', getData);
+    });
+</script>

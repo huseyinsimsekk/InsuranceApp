@@ -1,0 +1,25 @@
+﻿@model IEnumerable<CompanyOfferModel>
+@if (Model != null && Model.Count() > 0)
+{
+    <table>
+        <thead>
+            <tr>
+                <th style="width:30%"></th>
+                <th style="width:10%">Şirket</th>
+                <th style="width:30%">Fiyat Açıklaması</th>
+                <th style="width:20%">Fiyat</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td><img src="@item.LogoUrl" alt="@item.Name" /> </td>
+                    <td>@item.Name</td>
+                    <td>@item.OfferDescription</td>
+                    <td>@item.Fee</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

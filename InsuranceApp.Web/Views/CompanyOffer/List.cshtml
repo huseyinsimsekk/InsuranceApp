@@ -1,0 +1,11 @@
+﻿@model IEnumerable<CompanyOfferModel>
+
+<form asp-controller="CompanyOffer" asp-action="List" method="get" role="form">
+    <div class="form-group">
+        <label>Plaka Numarası</label>
+        <input id="licencePlate" type="text" name="licencePlate" class="form-control col-md-10" placeholder="34 NET 444">
+    </div>
+    <button type="submit" class="btn btn-primary">Teklifleri Listele</button>
+</form>
+
+<partial name="~/Views/Shared/DisplayTemplates/CompanyOfferList.cshtml" model="Model" />

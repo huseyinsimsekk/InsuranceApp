@@ -1,0 +1,11 @@
+﻿InsuranceApp.Web/bin
+InsuranceApp.Web/obj
+.vs
+InsuranceApp.UnitTest/bin
+InsuranceApp.UnitTest/obj
+InsuranceApp.Service/bin
+InsuranceApp.Service/obj
+InsuranceApp.Data/bin
+InsuranceApp.Data/obj
+InsuranceApp.Core/bin
+InsuranceApp.Core/obj
