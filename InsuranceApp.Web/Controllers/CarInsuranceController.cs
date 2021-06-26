@@ -72,8 +72,6 @@ namespace InsuranceApp.Web.Controllers
         private async Task<List<CompanyOffer>> SendRequestToAllServices(CarInsuranceModel model)
         {
             var offerList = new List<CompanyOffer>();
-            // Burada tek tek servislere istek atıp cevap almak yerine bir message queue yapısı ile kuyruğa bir teklif talebi gönderilir.
-            // Kuyruğu dinleyen servisler mesajı alıp tekliflerini gönderir. Bu şekilde yapmak için süre kısıtlı olduğu için deneyemedim.
             await GetCompanyOffer(Constants.InsuranceCompanyAUrl, model, offerList);
             await GetCompanyOffer(Constants.InsuranceCompanyBUrl, model, offerList);
             await GetCompanyOffer(Constants.InsuranceCompanyCUrl, model, offerList);
