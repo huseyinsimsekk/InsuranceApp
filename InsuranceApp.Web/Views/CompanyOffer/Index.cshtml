@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<CompanyOfferModel>
-@if (TempData["message"] is string)
+@if (TempData["message"] is string message)
 {
-    <p>@TempData["message"].ToString()</p>
+    <p>@message</p>
     <p>
         Anasayfaya Dönmek için <a href="@Url.Action("Index","Home")">Tıklayınız.</a>
     </p>
