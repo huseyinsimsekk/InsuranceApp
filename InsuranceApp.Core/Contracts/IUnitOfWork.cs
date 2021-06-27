@@ -10,6 +10,5 @@ namespace InsuranceApp.Core.Contracts
     {
         DbSet<T> GetEntity<T>() where T : class;
         void Commit();
-        Task CommitAsync();
     }
 }

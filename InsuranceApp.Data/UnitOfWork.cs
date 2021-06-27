@@ -19,11 +19,6 @@ namespace InsuranceApp.Data
             MainContext.SaveChanges();
         }
 
-        public async Task CommitAsync()
-        {
-            await MainContext.SaveChangesAsync();
-        }
-
         public DbSet<T> GetEntity<T>() where T : class
         {
             return MainContext.Set<T>();
