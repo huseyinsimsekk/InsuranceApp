@@ -30,8 +30,8 @@ namespace InsuranceApp.Web.Controllers
                 var model = JsonConvert.DeserializeObject<IEnumerable<CompanyOfferModel>>(modelJson);
                 return View(model);
             }
-            ViewData["Message"] = "Tekliflere Ulaşamadık. Lütfen Daha Sonra Tekrar Deneyiniz!";
-            return RedirectToAction("Home", "Index");
+            TempData["Message"] = "Tekliflere Ulaşamadık. Lütfen Daha Sonra Tekrar Deneyiniz";
+            return View();
         }
 
         public IActionResult List(string licencePlate)

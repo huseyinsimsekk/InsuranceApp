@@ -9,28 +9,28 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace InsuranceApp.Web.Controllers
 {
     public class CarInsuranceController : Controller
     {
-        private readonly IConfiguration _configuration;
         private readonly IInnerInsuranceService _innerInsuranceService;
         private readonly IOuterInsuranceService _outerInsuranceService;
         private readonly IMapper _mapper;
-        private readonly ILogger<CarInsuranceController> _logger;
-        public CarInsuranceController(IConfiguration configuration,
-                                     IMapper mapper,
-                                     ILogger<CarInsuranceController> logger,
-                                     IInnerInsuranceService innerInsuranceService,
-                                     IOuterInsuranceService outerInsuranceService)
+
+        private readonly List<string> CompanyUrls;
+        public CarInsuranceController(IMapper mapper, IInnerInsuranceService innerInsuranceService, IOuterInsuranceService outerInsuranceService)
         {
-            _configuration = configuration;
             _innerInsuranceService = innerInsuranceService;
             _outerInsuranceService = outerInsuranceService;
             _mapper = mapper;
-            _logger = logger;
+            CompanyUrls = new List<string>(){
+                        ConfigHelper.CompanyUrlSetting(Constants.InsuranceCompanyAUrl),
+                        ConfigHelper.CompanyUrlSetting(Constants.InsuranceCompanyBUrl),
+                        ConfigHelper.CompanyUrlSetting(Constants.InsuranceCompanyCUrl),
+                    };
         }
 
         public IActionResult Create()
@@ -42,58 +42,25 @@ namespace InsuranceApp.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                try
+                if (!_innerInsuranceService.HasRecord(model.LicencePlate, model.TCKN))
                 {
-                    if (!_innerInsuranceService.HasRecord(model.LicencePlate, model.TCKN))
-                    {
-                        var entity = _mapper.Map<CarInsurance>(model);
-                        _innerInsuranceService.AddCarInsurance(entity);
-                    }
-                    var list = await SendRequestToAllServices(model);
-                    TempData["CurrentOfferList"] = JsonConvert.SerializeObject(_mapper.Map<IEnumerable<CompanyOfferModel>>(list));
-                    return RedirectToAction("Index", "CompanyOffer");
+                    var entity = _mapper.Map<CarInsurance>(model);
+                    _innerInsuranceService.AddCarInsurance(entity);
                 }
-                catch (Exception ex)
-                {
-                    _logger.LogError($"Error. Detail:{ex.Message}");
-                    ViewData["Message"] = "İşlemizin Şuan Gerçekleştirilemedi. Lütfen Daha Sonra Tekrar Deneyiniz!";
-                    return RedirectToAction("Index", "Home");
-                }
+                var offerList = await _outerInsuranceService.SendRequestToAllServices(CompanyUrls, model);
+                if (offerList != null && offerList.Count() > 0)
+                    TempData["CurrentOfferList"] = JsonConvert.SerializeObject(offerList);
+                return RedirectToAction("Index", "CompanyOffer");
             }
             return View(model);
         }
+
         public JsonResult GetCarInsuranceModel(string tckn, string licencePlate)
         {
             var entity = _innerInsuranceService.GetCarInsuranceByLicencePlateAndTCKNAsync(licencePlate, tckn);
             if (entity is null) return Json(null);
             var model = _mapper.Map<CarInsuranceModel>(entity);
             return Json(model);
-        }
-        private async Task<List<CompanyOffer>> SendRequestToAllServices(CarInsuranceModel model)
-        {
-            var offerList = new List<CompanyOffer>();
-            await GetCompanyOffer(Constants.InsuranceCompanyAUrl, model, offerList);
-            await GetCompanyOffer(Constants.InsuranceCompanyBUrl, model, offerList);
-            await GetCompanyOffer(Constants.InsuranceCompanyCUrl, model, offerList);
-
-            return offerList;
-        }
-        private async Task GetCompanyOffer(string companyUrlSection, CarInsuranceModel model, List<CompanyOffer> offerList)
-        {
-            try
-            {
-                string companyApiUrl = _configuration.GetSection(companyUrlSection).Value;
-                var vmodel = await _outerInsuranceService.SendRequestToOfferAsync(companyApiUrl, model);
-                var entity = _mapper.Map<CompanyOffer>(vmodel);
-                entity.EffectedDate = DateTime.Now;
-                _innerInsuranceService.SaveCompanyOffer(entity);
-                offerList.Add(entity);
-
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Service Error: Detail{ex.Message}");
-            }
         }
     }
 }

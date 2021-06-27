@@ -1,2 +1,9 @@
 ﻿@model IEnumerable<CompanyOfferModel>
+@if (TempData["message"] is string)
+{
+    <p>@TempData["message"].ToString()</p>
+    <p>
+        Anasayfaya Dönmek için <a href="@Url.Action("Index","Home")">Tıklayınız.</a>
+    </p>
+}
 <partial name="~/Views/Shared/DisplayTemplates/CompanyOfferList.cshtml" model="Model" />
