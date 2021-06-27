@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using InsuranceApp.Core.Contracts;
+using InsuranceApp.Core.Entities;
 using InsuranceApp.Core.Models;
 using InsuranceApp.Web.Controllers;
 using Microsoft.AspNetCore.Mvc;
@@ -60,5 +61,27 @@ namespace InsuranceApp.UnitTest
             Assert.Equal("CompanyOffer", redirectAction.ControllerName);
             Assert.Equal("Index", redirectAction.ActionName);
         }
+        [Fact]
+        public void GetCarInsuranceModel_ShouldReturnJsonNullData_WhenNotFoundObject()
+        {
+            CarInsurance carInsurance = null;
+            innerServiceMock.Setup(m => m.GetCarInsuranceByLicencePlateAndTCKNAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(carInsurance);
+            var result = carInsuranceController.GetCarInsuranceModel("test", "test");
+            var jsonResult = Assert.IsType<JsonResult>(result);
+            Assert.Null(jsonResult.Value);
+        }
+        [Theory]
+        [InlineData("06ab06", "11111111111")]
+        public void GetCarInsuranceModel_ShouldReturnJsonData_WhenFoundObject(string licencePlate, string tckn)
+        {
+            var selected = carInsurances.FirstOrDefault(m => m.LicencePlate == licencePlate && m.TCKN == tckn);
+            CarInsurance carInsurance = new CarInsurance() { Id = 1, CreatedDate = DateTime.Now, TCKN = selected.TCKN, LicencePlate = selected.LicencePlate, LicenceCode = selected.LicenceCode, LicenceSerialNumber = selected.LicenceSerialNumber };
+            innerServiceMock.Setup(m => m.GetCarInsuranceByLicencePlateAndTCKNAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(carInsurance);
+            mapperMock.Setup(m => m.Map<CarInsuranceModel>(carInsurance)).Returns(selected);
+            var result = carInsuranceController.GetCarInsuranceModel(licencePlate, tckn);
+            var jsonResult = Assert.IsType<JsonResult>(result);
+            Assert.NotNull(jsonResult.Value);
+        }
+
     }
 }
