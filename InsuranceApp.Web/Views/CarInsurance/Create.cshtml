@@ -44,6 +44,7 @@
         const getData = function () {
              $.ajax({
                 type: "GET",
+                cache: false,
                 url: '@Url.Action("GetCarInsuranceModel", "CarInsurance")',
                 dataType: "json",
                 data: {
